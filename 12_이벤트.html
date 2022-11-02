@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>이벤트</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+</head>
+
+<body>
+
+    <h1>이벤트 핸들러(이벤트 발생 시 실행될 코드들)</h1>
+
+    <h3>* 방법1. 이벤트 메소드를 통한 연결</h3>
+    <pre>
+        $('선택자').이벤트메소드(function(){
+            이벤트 발생 시 실행할 내용
+        })
+    </pre>
+
+    <h4 id="test1">클릭해보세요!</h4>
+
+    <script>
+        $(function () {
+            $('#test1').click(function () {
+                $(this).html('클릭하셨어요!');
+            });
+
+            // 더블클릭
+            $('#test1').dblclick(function () {
+                $(this).css('color', 'red');
+            });
+        });
+    </script>
+
+    <br><br>
+
+    <h3>* 방법2. on메소드를 쓰는 방법1</h3>
+
+    <pre>
+        [ 표현법 ]
+        $('선택자').on('이벤트명',function(){
+            이벤트 발생 시 실행할 내용
+        });
+    </pre>
+
+    <h4 id="test2">마우스 클릭 및 올려보세요</h4>
+
+    <script>
+        $(function () {
+            /*
+            // 클릭 : 'click'
+            $('#test2').on('click', function(){
+                $(this).css('background', 'red').text('클릭');
+            });
+
+            // 올려보세요 : 'mouseenter'
+            $('#test2').on('mouseenter', function(){
+                $(this).css('color','blue');
+            });
+            */
+
+            // 한 번에 여러 개의 이벤트를 걸 수 있다(?)
+            /*
+            $('#test2').on({'click': function(){
+                $(this).css('background', 'red').text('클릭~');
+            }, 'mouseenter' : function(){
+                $(this).css('color','blue');
+            }});
+            */
+            $('#test2').on({
+                'mouseenter': function () {
+                    $(this).css('background', 'yellowgreen').text('마우스올라감');
+                },
+                'mouseout': function () {
+                    $(this).css('background', 'greenyellow').text('마우스나감');
+                },
+                'click': function () {
+                    // 클릭 이벤트가 발생할 경우 기존의 mouseenter, mouseout 이벤트 핸들러 제거
+                    $(this).off('mouseenter').off('mouseout');
+                    // off('삭제할 이벤트명') : 이벤트 핸들러 제거 메소드
+                    $(this).css('background', 'orangered').text('이벤트제거');
+                }
+            });
+        })
+    </script>
+
+    <br>* 방법3. on 메소드를 쓰는 방법2<br>
+    <pre>
+        [ 표현법 ]
+        $('상위요소선택자').on('이벤트명','하위요소선택자', function(){
+            이벤트 발생 시 실행할 내용
+        });
+    </pre>
+
+    <div id="wrap">
+        <h4>h4요소를 클릭해보세요</h4>
+        <h5>h5요소를 클릭해보세요</h5>
+    </div>
+
+    <script>
+        $(function () {
+            // h4는 #wrap의 자식
+            $('#wrap').on('click', 'h4', function () {
+                alert('날클릭했니?');
+            });
+            // ==
+            // $('#wrap h4').on('click', function(){}); 
+            // $('#wrap>h4').on('click', function(){}); 
+
+            // 현재 이 문서상의 모든 요소들 중에서 h1 ~ h6에 대해서 클릭이벤트를 주고싶다.
+            // $(document) : 이 문서 객체를 제이쿼리화 시킨 것
+
+            $(document).on('click', 'h1, h2, h3, h4, h5, h6', function () {
+                console.log($(this));
+                $(this).css('color', 'aqua');
+            })
+            /*
+            $('h1, h2, h3, h4, h5, h6').on('click', function(){
+
+            });
+            */
+        });
+    </script>
+
+    <hr>
+
+    <h3>* 동적으로 만들어진 요소에 이벤트 적용</h3>
+
+    <!-- 
+        동적으로 만들어진 요소 : 
+        처음에 문서 로딩시에는 존재하지 않다가 나중에 새롭게 만들어지는 요소
+     -->
+
+    <div id="wrap2" style="border:1px solid red">
+        <h6>기존에 존재하는 요소</h6>
+        <!-- 바로 여기에 -->
+    </div>
+
+    <script>
+        $(function () {
+            /*
+                // 방법 1. 이벤트 메소드 호출 => 동적으로 만들어진 요소에 이벤트 적용 안됨
+                $('#wrap2>h6').click(function(){
+                    $('#wrap2').append('<h6>새롭게 추가된 요소</h6>');
+                })
+            */
+            // 방법 2. on 메소드 => 동적으로 만들어진 요소에 이벤트 적용 안됨
+            /*
+            $('#wrap2>h6').on('click',function(){
+                $('#wrap2').append('<h6>새롭게 추가된 요소2</h6>');
+            })
+            */
+            // 문서 로딩 시점에 없는 요소들을 클릭하면 당연히 이벤트가 실행이 안됨
+
+            // 방법 3. on 메소드2 ★★★★★
+            $('#wrap2').on('click', 'h6', function () {
+                $('#wrap2').append('<h6>새롭게 추가된 요소3</h6>');
+            });
+            // 문서 로딩 시점에 있는 #wrap2에 이벤트를 부여
+            // 댓글 좋아요
+
+            // 동적으로 만들어진 요소에 기존에 존재하는 동일한 이벤트를 적용하고자 한다면
+            // 반드시 3번 방법으로 해야함.
+        });
+    </script>
+
+    <hr>
+
+    <h3>* 일회성 이벤트</h3>
+    <p>
+        이벤트를 딱 한번만 연결할 때 사용
+    </p>
+    <pre>
+        [ 표현법 ]
+        $('선택자').one('이벤트명', function(){
+            이벤트 발생 시 실행할 내용
+        });
+    </pre>
+
+    <h6 id="test3">단 한번만 실행할 것</h6>
+
+    <script>
+        $(function () {
+            $('#test3').one('click', function () {
+                alert('처음이자 마지막으로 이벤트 발생');
+            });
+        })
+    </script>
+
+    <hr>
+
+    <h3>* 키보드 관련 이벤트</h3>
+    <p>
+        키가 눌려졌을 때 발생하는 이벤트 <br>
+        - keydown : 키보드의 모든 키가 눌릴 때 발생 <br>
+        - keypress : 키보드의 function키, 기능키, 한글을 제외한 나머지 키가 눌릴 때 발생 <br><br>
+
+        키가 떼어질 때 발생하는 이벤트 <br>
+        - keyup
+    </p>
+
+    <input type="text" id="test4">
+
+    <script>
+        $(function () {
+            $('#test4').keydown(function () {
+                // console.log('눌림');
+                // console.log($(this).val());
+                // console.log($(this).val().length); // 실시간 글자수 세기
+            });
+
+            $('#test4').keyup(function () {
+                // console.log('올라옴');
+            });
+        })
+    </script>
+
+    <hr>
+
+    <h3>* 글자수 세기 예제</h3>
+
+    <div style="border:1px solid lightgray">
+        150자 이내로 작성하시오 <br>
+        <textarea id="content" cols="40" rows="10" style="resize:none" maxlength="150"></textarea>
+    </div>
+    <br>
+    <hr>
+    <span id="count">0</span> / 150
+
+    <script>
+        $(function () {
+            $('#content').keyup(function () {
+                $('#count').html($(this).val().length);
+            });
+        })
+    </script>
+
+    <hr>
+
+    <h3>체크박스를 만들자 ~~!!</h3>
+
+    <div class="wrapper">
+        <div>
+            <input type="checkbox" id="all" class="batch"><label>전체</label>
+            <input type="checkbox" id="jp" class="batch"><label>일식</label>
+            <input type="checkbox" id="ch" class="batch"><label>중식</label>
+        </div>
+
+        <hr>
+        <div>
+            <input type="checkbox" class="jp chk"><label>초밥</lable>
+            <input type="checkbox" class="jp chk"><label>오코노미야끼</lable>
+            <hr>
+            <input type="checkbox" class="ch chk"><label>유산슬</lable>
+            <input type="checkbox" class="ch chk"><label>소룡포</lable>
+        </div>
+    </div>
+
+    <script>
+        $(function(){
+            $('.batch').on('change', function(){
+                if($(this).prop('checked') == false){
+                    $('#all').prop('checked', false);
+                }
+            });
+            $('.jp').on('change', function(){
+                if($(this).prop('checkbox') == false){
+                    $('#jp').prop('checked', false);
+                }
+            })
+
+            $('#all').on('change', function(){
+                var $all = $('#all').prop('checked');
+                if($all){
+                    $('.batch, .chk').prop('checked', true);
+                }
+                else{
+                    $('.batch, .chk').prop('checked', false);
+                }
+            });
+            $('#jp').on('change', function(){
+                var $jp = $('#jp').prop('checked');
+                if($jp){
+                    $('.jp').prop('checked',true);
+                }
+                else{
+                    $('.jp').prop('checked',false);
+                }
+            })
+            $('#ch').on('change', function(){
+                var $ch = $('#ch').prop('checked');
+                if($ch){
+                    $('.ch').prop('checked',true);
+                }
+                else{
+                    $('.ch').prop('checked',false);
+                }
+            })
+        })
+    </script>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</body>
+
+</html>

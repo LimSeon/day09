@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>시각적인효과메소드</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script> -->
+</head>
+<body>
+    <h1>시각적인 효과 메소드(Effect메소드)</h1>
+    
+    <p>
+        페이지 내에서 애니메이션 효과를 만들기 위해 사용하는 메소드 집합 <br><br>
+    
+        - show(), hide(), toggle() <br>
+        - fadeIn(), fadeOut(), fadeToggle() <br>
+        - slideDown(), slideUp()
+    </p>
+
+    <h3>* show(), hide(), toggle()</h3>
+
+    <p>
+        선택된 요소가 점점 커지면서 보이고, 점점 작아지면서 사라지게 하는 메소드
+    </p>
+
+    <button id="hide">숨기기</button>
+    <button id="show">보이기</button>
+    <button id="toggle">토글</button>
+
+    <br><br>
+
+    <img id="pizza" src="https://cdn.dominos.co.kr/admin/upload/goods/20220830_c3Lh4i3H.jpg" alt="피자사진">
+
+    <br><br>
+
+    <h3>* fadeIn(), fadeOut(), fadeToggle() </h3>
+    <p>
+        선택된 요소가 점점 투명해지면서 사라지고, 점점 선명해지면서 보여지게 하는 메소드
+    </p>
+
+    <button id="fadeOut">숨기기</button>
+    <button id="fadeIn">보여주기</button>
+    <button id="fadeToggle">토글</button>
+    
+    <br>
+
+    <script>
+        $(function(){
+            // 숨기기 버튼
+            $('#hide').click(function(){
+                $('#pizza').hide(3000); // 시간(ms)
+            });
+            // 보이기 버튼
+            $('#show').click(function(){
+                $('#pizza').show(3000);
+            });
+            // toggle() 스위치로 따지면 on/off 기능
+            $('#toggle').click(function(){
+                $('#pizza').toggle(1000);
+            })
+            // 인자값으로 ms단위로 시간을 지정할 수 있음.
+
+            $('#fadeOut').click(function(){
+                $('#pizza').fadeOut(3000);
+            });
+            $('#fadeIn').click(function(){
+                $('#pizza').fadeIn(3000);
+            });
+            $('#fadeToggle').click(function(){
+                $('#pizza').fadeToggle(1000);
+            });
+        });
+    </script>
+
+</body>
+</html>
